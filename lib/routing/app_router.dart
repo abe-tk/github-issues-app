@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../config/constants.dart';
-import '../ui/feature/widgets/issue_list_page.dart';
-import '../ui/feature/widgets/issue_detail_page.dart';
-import '../ui/feature/widgets/issue_form_page.dart';
+import '../ui/issue/widgets/issue_list_page.dart';
+import '../ui/issue/widgets/issue_detail_page.dart';
+import '../ui/issue/widgets/issue_form_page.dart';
 
 /// アプリケーションのルーター設定
 class AppRouter {
