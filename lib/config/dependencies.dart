@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import '../data/services/github_api_service.dart';
 import '../data/repositories/issue_repository_impl.dart';
 import '../domain/usecases/issue_usecase.dart';
-import '../ui/feature/view_models/issue_list_view_model.dart';
-import '../ui/feature/view_models/issue_detail_view_model.dart';
-import '../ui/feature/view_models/issue_form_view_model.dart';
-import '../ui/feature/view_models/app_config_view_model.dart';
+import '../ui/issue/view_models/issue_list_view_model.dart';
+import '../ui/issue/view_models/issue_detail_view_model.dart';
+import '../ui/issue/view_models/issue_form_view_model.dart';
+import '../ui/issue/view_models/app_config_view_model.dart';
 import 'constants.dart';
 
 /// プロバイダー設定
