@@ -2,19 +2,29 @@
   "hooks": {
     "PostToolUse": [
       {
-        "description": ".dart ファイル保存後に自動フォーマット",
-        "type": "command",
-        "command": "python3 .claude/hooks/scripts/dart_format.py",
-        "timeout": 10000
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "description": ".dart ファイル保存後に自動フォーマット",
+            "type": "command",
+            "command": "python3 .claude/hooks/scripts/dart_format.py",
+            "timeout": 10000
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "description": "Claude 応答完了後に flutter analyze を実行",
-        "type": "command",
-        "command": "python3 .claude/hooks/scripts/flutter_analyze.py",
-        "timeout": 60000,
-        "async": true
+        "matcher": "",
+        "hooks": [
+          {
+            "description": "Claude 応答完了後に flutter analyze を実行",
+            "type": "command",
+            "command": "python3 .claude/hooks/scripts/flutter_analyze.py",
+            "timeout": 60000,
+            "async": true
+          }
+        ]
       }
     ]
   }
