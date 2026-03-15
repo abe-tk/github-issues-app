@@ -2,11 +2,14 @@
 
 GitHub REST API を利用して Issues を管理する Flutter モバイルアプリ。
 
-## 機能
+## 機能・画面構成
 
-- Issue 一覧の取得・表示
-- Issue の作成
-- Issue の更新
+| 画面 | 機能 |
+|------|------|
+| Issue一覧 | Issues を一覧表示 |
+| Issue詳細 | Issue の内容を表示 |
+| Issue作成 | タイトル・本文を入力して新規作成 |
+| Issue編集 | 既存 Issue を更新 |
 
 ## セットアップ
 
@@ -30,24 +33,18 @@ cd github-issues-app
 flutter pub get
 ```
 
-3. 環境変数を設定
-
-プロジェクトルートに `.env` ファイルを作成し、以下を記述する。
-`.env` はリポジトリに含めないこと。
-
-```
-GITHUB_TOKEN=your_personal_access_token
-GITHUB_OWNER=your_github_username
-GITHUB_REPO=your_repository_name
-```
+3. アプリを起動
 
 GitHub PAT は [Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens) から発行する。
 必要なスコープ: `repo`
 
-4. アプリを起動
+認証情報はビルド時に `--dart-define` で渡す：
 
 ```bash
-flutter run
+flutter run \
+  --dart-define=GITHUB_TOKEN=your_personal_access_token \
+  --dart-define=GITHUB_OWNER=your_github_username \
+  --dart-define=GITHUB_REPO=your_repository_name
 ```
 
 ## 開発

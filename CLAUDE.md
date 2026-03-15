@@ -87,12 +87,39 @@ dart run build_runner watch --delete-conflicting-outputs
 | Issue作成 | POST | `/repos/{owner}/{repo}/issues` |
 | Issue更新 | PATCH | `/repos/{owner}/{repo}/issues/{number}` |
 
+## 画面構成
+
+| 画面 | ルート | 役割 |
+|------|--------|------|
+| Issue一覧画面 | `/issues` | Issues を一覧表示。タップで詳細へ遷移 |
+| Issue詳細画面 | `/issues/:number` | Issue の内容を表示。編集ボタンで編集画面へ |
+| Issue作成画面 | `/issues/new` | タイトル・本文を入力して Issue を POST |
+| Issue編集画面 | `/issues/:number/edit` | 既存 Issue を PATCH |
+
+- 設定画面は不要。認証情報はビルド時の環境変数で渡す（後述）
+- アプリ起動時のデフォルトルートは `/issues`（一覧画面）
+
 ## セキュリティ上の注意
 
 **認証情報（PATトークン、リポジトリのowner/repo名など）はコードにハードコードしない。**
 
-- 環境変数または実行時にユーザーが入力する仕組みで管理する
-- `.env` ファイルや秘密情報を含むファイルは `.gitignore` に追加する
+ビルド時に `--dart-define` で渡し、コード内では `String.fromEnvironment()` で参照する：
+
+```bash
+flutter run \
+  --dart-define=GITHUB_TOKEN=your_pat \
+  --dart-define=GITHUB_OWNER=your_username \
+  --dart-define=GITHUB_REPO=your_repo
+```
+
+```dart
+// lib/config/constants.dart
+const githubToken = String.fromEnvironment('GITHUB_TOKEN');
+const githubOwner = String.fromEnvironment('GITHUB_OWNER');
+const githubRepo  = String.fromEnvironment('GITHUB_REPO');
+```
+
+- `.env` ファイルは使用しない
 - `git add` 前に機密情報が含まれていないか確認する
 
 ## テスト方針
