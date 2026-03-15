@@ -27,12 +27,21 @@ lib/
 │   ├── dependencies.dart        # Provider設定
 │   └── constants.dart           # アプリ定数
 ├── data/
-│   ├── models/                  # データモデル（freezed + json_serializable）
-│   ├── services/                # APIサービス（Retrofit生成）
-│   └── repositories/            # リポジトリ実装
+│   ├── services/                # サービス単位でフォルダを切る
+│   │   └── {service}/           # 例: github/
+│   │       ├── {service}_api_service.dart   # Retrofitクライアント
+│   │       └── model/           # DTOモデル（freezed + json_serializable）
+│   │           └── {xxx}_api_model.dart
+│   └── repositories/            # feature単位でフォルダを切る
+│       └── {feature}/           # 例: issue/
+│           ├── {feature}_repository.dart          # インターフェース（抽象クラス）
+│           └── {feature}_repository_remote.dart   # リモート実装
 ├── domain/
-│   ├── models/                  # ドメインモデル
-│   └── usecases/                # ビジネスロジック
+│   ├── models/                  # エンティティモデル（freezedのみ、JSONシリアライズなし）
+│   │   └── {feature}/           # 例: issue/
+│   │       └── {feature}.dart
+│   └── usecases/                # ビジネスロジック（複雑なロジックがある場合のみ）
+│       └── {feature}/           # 例: issue/
 ├── routing/
 │   ├── app_router.dart          # go_router設定
 │   └── routes.dart              # ルート定義
@@ -40,7 +49,7 @@ lib/
 │   ├── core/                    # 共通UIコンポーネント
 │   │   ├── themes/
 │   │   └── widgets/
-│   └── {feature}/               # 機能単位（例: issues/）
+│   └── {feature}/               # 機能単位（例: issue/）
 │       ├── view_models/         # ViewModel（ChangeNotifier）
 │       └── widgets/             # 画面・コンポーネント
 └── utils/

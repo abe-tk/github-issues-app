@@ -29,59 +29,64 @@ Flutter アプリの実装専門エージェントです。
 
 依存関係の順に実装すること（逆順にしない）：
 
-### Step 1: Data層 - モデル (`lib/data/models/`)
+### Step 1: Data層 - DTOモデル (`lib/data/services/{service}/model/`)
 
 `flutter-handling-http-and-json` スキルに従い、freezed + json_serializable で実装する。
 
 ```dart
 @freezed
-class IssueModel with _$IssueModel {
-  const factory IssueModel({
+abstract class IssueApiModel with _$IssueApiModel {
+  const factory IssueApiModel({
     required int number,
     required String title,
     // ...
-  }) = _IssueModel;
+  }) = _IssueApiModel;
 
-  factory IssueModel.fromJson(Map<String, dynamic> json) =>
-      _$IssueModelFromJson(json);
+  factory IssueApiModel.fromJson(Map<String, dynamic> json) =>
+      _$IssueApiModelFromJson(json);
 }
 ```
 
-### Step 2: Data層 - サービス (`lib/data/services/`)
+### Step 2: Data層 - サービス (`lib/data/services/{service}/`)
 
-Retrofit でエンドポイントを定義する。
+Retrofit でエンドポイントを定義する。認証ヘッダーは `Dio` のインターセプターで付与するためメソッド引数には含めない。
 
 ```dart
 @RestApi(baseUrl: 'https://api.github.com')
-abstract class GitHubApiService {
-  factory GitHubApiService(Dio dio, {String baseUrl}) = _GitHubApiService;
+abstract class GithubApiService {
+  factory GithubApiService(Dio dio, {String baseUrl}) = _GithubApiService;
 
   @GET('/repos/{owner}/{repo}/issues')
-  Future<List<IssueModel>> getIssues(
+  Future<List<IssueApiModel>> getIssues(
     @Path('owner') String owner,
     @Path('repo') String repo,
-    @Header('Authorization') String token,
   );
 }
 ```
 
-### Step 3: Data層 - リポジトリ (`lib/data/repositories/`)
+### Step 3: Domain層 - エンティティモデル (`lib/domain/models/{feature}/`)
 
-抽象クラスを先に定義し、実装クラスを作成する。
+エンティティが必要な場合のみ作成する（判断基準は flutter-architect.md 参照）。
+freezed のみ使用し、json_serializable は使わない。
 
-### Step 4: UI層 - ViewModel (`lib/ui/{feature}/view_models/`)
+### Step 4: Data層 - リポジトリ (`lib/data/repositories/{feature}/`)
+
+インターフェース（`{feature}_repository.dart`）を先に定義し、リモート実装（`{feature}_repository_remote.dart`）を作成する。
+リモート実装は `XxxApiModel` → エンティティへの変換も担う。
+
+### Step 5: UI層 - ViewModel (`lib/ui/{feature}/view_models/`)
 
 `flutter-managing-state` スキルに従い、ChangeNotifier で実装する。
 
-### Step 5: UI層 - Widget (`lib/ui/{feature}/widgets/`)
+### Step 6: UI層 - Widget (`lib/ui/{feature}/widgets/`)
 
 `flutter-building-layouts` / `flutter-building-forms` スキルに従い実装する。
 
-### Step 6: DI 登録 (`lib/config/dependencies.dart`)
+### Step 7: DI 登録 (`lib/config/dependencies.dart`)
 
 Provider に新しいクラスを登録する。
 
-### Step 7: コード生成
+### Step 8: コード生成
 
 モデルやサービスを追加・変更した後は必ず実行する：
 

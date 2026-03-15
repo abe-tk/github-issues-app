@@ -30,8 +30,11 @@ Flutter アプリの設計専門エージェントです。
 
 `flutter-architecting-apps` スキルの原則に従い、以下を設計する：
 
-- **Data層**: モデル（freezed）・サービス（Retrofit）・リポジトリ（インターフェース＋実装）
-- **Domain層**: ユースケース（複雑なロジックがある場合のみ）
+- **Data層**:
+  - DTOモデル（freezed + json_serializable）: `data/services/{service}/model/{xxx}_api_model.dart`
+  - Retrofitサービス: `data/services/{service}/{service}_api_service.dart`
+  - リポジトリ（インターフェース＋リモート実装の両方）: `data/repositories/{feature}/`
+- **Domain層**: エンティティモデル（`domain/models/{feature}/`）・ユースケース（複雑なロジックがある場合のみ）
 - **UI層**: ViewModel（ChangeNotifier）・Widget
 
 ### Step 3: 設計ドキュメントを出力する
@@ -40,33 +43,50 @@ Flutter アプリの設計専門エージェントです。
 
 ```
 ## 作成するファイル一覧
-- lib/data/models/xxx.dart        — 役割
-- lib/data/services/xxx_service.dart   — 役割
-- lib/data/repositories/xxx_repository.dart — 役割
-- lib/ui/xxx/view_models/xxx_view_model.dart — 役割
-- lib/ui/xxx/widgets/xxx_screen.dart    — 役割
+- lib/data/services/{service}/model/{xxx}_api_model.dart  — DTOモデル
+- lib/data/services/{service}/{service}_api_service.dart  — Retrofitクライアント
+- lib/data/repositories/{feature}/{feature}_repository.dart        — インターフェース
+- lib/data/repositories/{feature}/{feature}_repository_remote.dart — リモート実装
+- lib/domain/models/{feature}/{feature}.dart              — エンティティ（条件付き、下記参照）
+- lib/ui/{feature}/view_models/{feature}_view_model.dart  — ViewModel
+- lib/ui/{feature}/widgets/{feature}_screen.dart          — 画面Widget
 
 ## 各クラスの責務
-### XxxModel (freezed)
+### XxxApiModel (freezed + json_serializable)
 - フィールド: ...
 
-### XxxService (Retrofit)
+### XxxApiService (Retrofit)
 - エンドポイント: GET /repos/{owner}/{repo}/issues など
 
-### XxxRepository / XxxRepositoryImpl
+### XxxRepository（インターフェース） / XxxRepositoryRemote（実装）
 - メソッド: ...
+- XxxRepositoryRemote は XxxApiModel → エンティティ（Xxx）への変換も担う
+
+### Xxx（エンティティ、domain/models/）
+- フィールド: ...
 
 ### XxxViewModel
 - 状態: ...
 - メソッド: ...
 
 ## 依存関係の流れ
-Widget → ViewModel → Repository → Service
+Widget → ViewModel → Repository（インターフェース）→ RepositoryRemote → ApiService
 
 ## コード生成の要否
-- [ ] freezed が必要なモデル: xxx.dart
-- [ ] Retrofit が必要なサービス: xxx_service.dart
+- [ ] freezed が必要なモデル: xxx_api_model.dart, xxx.dart
+- [ ] Retrofit が必要なサービス: xxx_api_service.dart
 ```
+
+## Domain モデル（エンティティ）を作るかどうかの判断基準
+
+`domain/models/` にエンティティモデルを作るのは **以下をすべて満たす場合のみ**：
+
+1. APIレスポンス（DTOモデル）の構造とUIで使いたい構造が大きく異なる
+2. 複数のデータソース（REST API・SQLiteなど）を同一エンティティに統合する必要がある
+3. ビジネスルールによるデータ変換（バリデーション・集計など）が存在する
+
+**条件を満たさない場合は `data/services/{service}/model/` の DTO モデルをそのまま使う。**
+単純な CRUD で API 構造と UI 表示がほぼ一致するケースでドメインモデルを挟むのは過剰設計になる。
 
 ## 制約
 

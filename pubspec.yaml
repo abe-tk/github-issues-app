@@ -66,6 +66,9 @@ dev_dependencies:
   freezed: ^3.2.5
   build_runner: ^2.11.1
 
+  # テスト用モックライブラリ
+  mockito: ^5.4.5
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

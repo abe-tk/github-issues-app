@@ -7,19 +7,34 @@
         {
             "name": "github-issues-app",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "args": [
+                "--dart-define=GITHUB_TOKEN=",
+                "--dart-define=GITHUB_OWNER=abe-tk",
+                "--dart-define=GITHUB_REPO=github-issues-app"
+            ]
         },
         {
             "name": "github-issues-app (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define=GITHUB_TOKEN=",
+                "--dart-define=GITHUB_OWNER=abe-tk",
+                "--dart-define=GITHUB_REPO=github-issues-app"
+            ]
         },
         {
             "name": "github-issues-app (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "args": [
+                "--dart-define=GITHUB_TOKEN=",
+                "--dart-define=GITHUB_OWNER=abe-tk",
+                "--dart-define=GITHUB_REPO=github-issues-app"
+            ]
         }
     ]
 }
